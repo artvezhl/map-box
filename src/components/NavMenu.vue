@@ -6,6 +6,12 @@
     <v-btn v-show="isOpen" id="centerButton" @click="onButtonClick" color="transparent" class="white--text">
       Осмотр
     </v-btn>
+    <v-btn v-show="isOpen" @click="openPopup" color="transparent" class="white--text">
+      Открыть попап
+    </v-btn>
+    <v-btn v-show="isOpen" @click="moveToPopup" color="transparent" class="white--text">
+      Координаты 0 0
+    </v-btn>
     <v-spacer></v-spacer>
     <v-btn @click="onMenuHandle" color="transparent" max-width="50px" min-width="50px" class="btn">
       <v-app-bar-nav-icon color="white" />
@@ -26,7 +32,9 @@ export default {
   }),
   props: {
     currentMap: Object,
-    geoData: Object
+    geoData: Object,
+    openPopup: Function,
+    moveToPopup: Function
   },
   methods: {
     onMenuHandle() {
