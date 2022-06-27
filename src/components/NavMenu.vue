@@ -45,26 +45,6 @@ export default {
       }
 
       return zoom;
-    },
-    onButtonClick() {
-      const coordinates = this.geoData.data.features.map(feature => feature.geometry.coordinates);
-
-      // Create a 'LngLatBounds' with both corners at the first coordinate.
-      const bounds = new mapboxgl.LngLatBounds(
-          coordinates[0],
-          coordinates[0]
-      );
-
-      // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
-      for (const coord of coordinates) {
-        bounds.extend(coord);
-      }
-
-      this.currentMap.fitBounds(bounds, {
-        padding: 180
-      });
-
-      this.onMenuHandle();
     }
   }
 }
