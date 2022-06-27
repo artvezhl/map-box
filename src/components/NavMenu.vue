@@ -32,19 +32,25 @@ export default {
     onMenuHandle() {
       this.isOpen = !this.isOpen;
     },
-    newCenterFinder(firstCoord, lastCoord) {
-      return [(firstCoord[0]+lastCoord[0])/2, (firstCoord[1]+lastCoord[1])/2];
-    },
-    // TODO refactor func to return zoom depends of destination between first and last points
-    newZoomFinder(firstCoord, lastCoord){
-      const latitude = lastCoord[1] - firstCoord[1];
-      let zoom = 5;
+    onButtonClick() {
+      const coordinates = this.geoData.data.features.map(feature => feature.geometry.coordinates);
 
-      if (0.06 > latitude > 0.04) {
-        zoom = 12;
+      // Create a 'LngLatBounds' with both corners at the first coordinate.
+      const bounds = new mapboxgl.LngLatBounds(
+          coordinates[0],
+          coordinates[0]
+      );
+
+      // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
+      for (const coord of coordinates) {
+        bounds.extend(coord);
       }
 
-      return zoom;
+      this.currentMap.fitBounds(bounds, {
+        padding: 180
+      });
+
+      this.onMenuHandle();
     }
   }
 }
