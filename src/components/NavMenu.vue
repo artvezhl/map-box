@@ -3,7 +3,7 @@
       class="nav blue flex-column justify-space-between align-center pa-1"
       :style="isOpen ? 'width: 250px' : 'width: 50px'"
   >
-    <v-btn v-show="isOpen" color="transparent" class="white--text">
+    <v-btn v-show="isOpen" id="centerButton" @click="onButtonClick" color="transparent" class="white--text">
       Осмотр
     </v-btn>
     <v-spacer></v-spacer>
@@ -17,10 +17,43 @@
 export default {
   data: () => ({
     isOpen: false,
+    data: null,
+    coordinates: [],
+    newCenter: [],
+    newZoom: 0
   }),
+  props: {
+    currentMap: Object,
+    geoData: Object
+  },
   methods: {
     onMenuHandle() {
       this.isOpen = !this.isOpen;
+    },
+    newCenterFinder(firstCoord, lastCoord) {
+      return [(firstCoord[0]+lastCoord[0])/2, (firstCoord[1]+lastCoord[1])/2];
+    },
+    // TODO refactor func to return zoom depends of destination between first and last points
+    newZoomFinder(firstCoord, lastCoord){
+      const latitude = lastCoord[1] - firstCoord[1];
+      let zoom = 5;
+
+      if (0.06 > latitude > 0.04) {
+        zoom = 12;
+      }
+
+      return zoom;
+    },
+    onButtonClick() {
+      const coordinatesArray = this.geoData.data.features.map(feature => feature.geometry.coordinates).sort((a,b) => a[1]-b[1]);
+      const firstCoord = coordinatesArray[0];
+      const lastCoord = coordinatesArray[coordinatesArray.length - 1];
+
+      this.currentMap.flyTo({
+        center: this.newCenterFinder(firstCoord, lastCoord),
+        zoom:  this.newZoomFinder(firstCoord, lastCoord),
+        essential: true
+      })
     }
   }
 }
