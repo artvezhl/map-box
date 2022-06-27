@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import mapboxgl from "mapbox-gl";
+
 export default {
   data: () => ({
     isOpen: false,
@@ -45,15 +47,24 @@ export default {
       return zoom;
     },
     onButtonClick() {
-      const coordinatesArray = this.geoData.data.features.map(feature => feature.geometry.coordinates).sort((a,b) => a[1]-b[1]);
-      const firstCoord = coordinatesArray[0];
-      const lastCoord = coordinatesArray[coordinatesArray.length - 1];
+      const coordinates = this.geoData.data.features.map(feature => feature.geometry.coordinates);
 
-      this.currentMap.flyTo({
-        center: this.newCenterFinder(firstCoord, lastCoord),
-        zoom:  this.newZoomFinder(firstCoord, lastCoord),
-        essential: true
-      })
+      // Create a 'LngLatBounds' with both corners at the first coordinate.
+      const bounds = new mapboxgl.LngLatBounds(
+          coordinates[0],
+          coordinates[0]
+      );
+
+      // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
+      for (const coord of coordinates) {
+        bounds.extend(coord);
+      }
+
+      this.currentMap.fitBounds(bounds, {
+        padding: 180
+      });
+
+      this.onMenuHandle();
     }
   }
 }
