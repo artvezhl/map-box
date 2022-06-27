@@ -1,5 +1,7 @@
 # mapbox-app
 
+[Link to the project](https://map-box-eight.vercel.app/)
+
 ## Project setup
 ```
 yarn install
